@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Monjo.github.io by monjo</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Monjo.github.io</h1>
+        <p>Monjo Homepage</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/monjo" class="button fork"><strong>View On GitHub</strong></a>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a name="monjo" class="anchor" href="#monjo"><span class="octicon octicon-link"></span></a>Monjo!</h1>
+
+<p><a href="https://travis-ci.org/rdllopes/monjo"><img src="https://travis-ci.org/rdllopes/monjo.png?branch=master" alt="Build Status"></a></p>
+
+<p>Monjo is a lightweight type-safe library for mapping Java objects to/from MongoDB:</p>
+
+<ul>
+<li>Easy to use, and very lightweight</li>
+<li>Type-safe Query support</li>
+<li>Annotations describe mapping behavior; there are no XML files.</li>
+<li><p>Extensions: Validation (jsr330), and SLF4J Logging</p></li>
+<li><p>Standard Mapping: use a set of rules for determining the physical fields and collections 
+names given the information in the mapping  document (ex: naming strategy prefers
+embedded underscores to mixed case names)</p></li>
+<li>
+<p>Javabeans: accessors and mutators are always used to infer fields </p>
+
+<pre><code>@Entity("professionals")
+class Employee implements IdentificableDocument&lt;ObjectId&gt;{
+  ObjectId id; // auto-generated, if not set (see ObjectId)
+  String firstName, lastName; // value types are automatically persisted
+  Long salary = null; // only non-null values are stored 
+
+  Address address; // by default fields are embedded
+
+  @ReferenceKey&lt;Employee&gt; manager; //references can be saved without automatic loading
+
+  List&lt;Employee&gt; underlings = new ArrayList&lt;Employee&gt;(); 
+     // by default, use DBList to persist inner collections
+
+  @Indexed boolean active = false; //fields can be indexed for better performance
+  @Transient int notStored; //fields can be ignored (no load/save)
+  transient boolean stored = true; //not @Transient, will be ignored by Serialization/GWT for example.
+}
+</code></pre>
+</li>
+</ul><h2>
+<a name="special-features" class="anchor" href="#special-features"><span class="octicon octicon-link"></span></a>Special features</h2>
+
+<ul>
+<li>
+<p>Find By Example (find a object using any field, maybe an inner inner inner ... object )</p>
+
+<pre><code>PojoWithListInnerObject pojo = PojoBuilder.createMegaZordePojo();
+Monjo&lt;ObjectId, PojoWithListInnerObject&gt; monjo = new Monjo&lt;ObjectId, PojoWithListInnerObject&gt;(getMongoDB(), PojoWithListInnerObject.class);
+monjo.removeAll();
+monjo.insert(createMegaZordePojo);
+pojo.setId(null);
+List&lt;Category&gt; categories = pojo.getCategories();
+Category category = categories.get(0);
+category.setName(null);
+PojoWithListInnerObject result = pojongo.findByExample(pojo.toList().get(0);
+</code></pre>
+</li>
+<li>
+<p>Cursor (select page of selection, sort and so on) </p>
+
+<pre><code>List&lt;SimplePOJO&gt; list = monjo.find().limit(5).toList();
+</code></pre>
+</li>
+<li>
+<p>Update inner Objects</p>
+
+<pre><code> monjo.&lt;Category&gt; updateInnerObject("categories", category, pojo);
+</code></pre>
+</li>
+<li><p>Does not store Null/Empty values (by default).</p></li>
+<li><p>GWT support (entities are just POJOs) -- (GWT ignores annotations)</p></li>
+</ul><p>Note: <a href="https://github.com/Reference" class="user-mention">@Reference</a> will not save objects, just a reference to them; You must save them yourself. </p>
+
+<p>This library is currently at a very early development stage.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-4907196-4");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
